@@ -1,97 +1,244 @@
-<!-- 
-    © 2024 DDW, Publicidad Online y Programación Web
-    Autor: Gonzalo Reynoso - DDW, gonzita@gmail.com
-    Sitio web: https://ddw.com.ar
-    Descripción: Menú Restaurant QR
-    Licencia: MIT 
-
-    ATENCIÓN: Este archivo no es parte de Google Apps Script, subilo al directorio de tu dominio donde desees publicarlo, por ejemplo https://turestaurant.com/index.html editando la url del iframe (implementación web app de google apps script)
--->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Restaurant</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #292d30;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= title ?></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
 
-#container {
-  background-color: #292d30;
-  width: 100%;
-  height: 100vh; /* Usar 100vh en lugar de calc(100vh - 100px) */
-}
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f2;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: #1a1a1a;
+    }
 
-iframe {
-  border: none;
-  width: 100%;
-  height: 100%;
-  display: block;
-  background-color: #292d30;
-}
+    html {
+      scroll-padding-top: 80px;
+    }
 
-#loadingMessage {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: red;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  font-family: 'Arial', sans-serif;
-}
-    </style>
+    section[id] {
+      scroll-margin-top: 80px;
+    }
 
-    <script>
-        function checkIframe() {
-            const iframe = document.getElementById('iframeCotizador');
-            const loadingMessage = document.getElementById('loadingMessage');
+    /* ── Header ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+      background-color: #111;
+    }
 
-            loadingMessage.style.display = 'block';
-            iframe.style.display = 'none';
+    .header-brand {
+      padding: 18px 24px 14px;
+    }
 
-            iframe.onload = function() {
-                loadingMessage.style.display = 'none'; 
-                iframe.style.display = 'block'; 
-            };
+    .header-brand .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+      margin: 0 0 4px;
+    }
 
-            setTimeout(() => {
-                try {
-                    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    .header-brand h1 {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: white;
+      margin: 0;
+    }
 
-                    if (iframeDocument.readyState === 'complete' || iframeDocument.body.innerHTML !== '') {
-                        loadingMessage.style.display = 'none';
-                        iframe.style.display = 'block'; 
-                    }
-                } catch (e) {
-                    loadingMessage.style.display = 'none';
-                    iframe.style.display = 'block'; 
-                }
-            }, 0); 
-        }
-    </script>
+    /* ── Category nav ── */
+    .category-nav {
+      background: #1a1a1a;
+      padding: 10px 24px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar { display: none; }
+
+    .category-nav a {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border: 0.5px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .category-nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    /* ── Section heading ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin: 0 0 18px;
+    }
+
+    /* ── Product cards ── */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .product-card {
+      background: #fff;
+      border: 0.5px solid #e0e0dc;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-card .card-body {
+      padding: 14px 16px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card h5 {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 6px;
+      color: #1a1a1a;
+    }
+
+    .product-card p.desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+      margin: 0 0 12px;
+      flex: 1;
+    }
+
+    .product-card .price {
+      font-size: 14px;
+      font-weight: 500;
+      color: #c0392b;
+      margin: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #111;
+      color: rgba(255,255,255,0.45);
+      padding: 20px 24px;
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: underline;
+    }
+
+    .qr-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 0.5px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .qr-block p {
+      margin: 0;
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .qr-block img {
+      width: 72px;
+      height: auto;
+    }
+  </style>
 </head>
-<body onload="checkIframe()">
-    <div id="loadingMessage">Cargando aplicación...</div>
-<!--    <div id="header">
-        <a href="https://ddw.com.ar/">
-            <img src="png-clipart-graphics-restaurant-logo-restaurant.png" alt="Rent a Car">
-        </a>
+<body>
+
+  <header class="site-header">
+    <div class="header-brand">
+      <p class="eyebrow">Menú digital</p>
+      <h1><?= title ?></h1>
     </div>
--->
-    <div id="container">
-        <iframe id="iframeCotizador" src="https://script.google.com/macros/s/AKfycbwd_E4MnPEYZpSGbGyVl5lG06LEvo_8j_t2z_I_MPUYuZfyQne9lPbxzUAjtl4ltEos/exec"></iframe>
+    <nav class="category-nav">
+      <? for (const category in itemsByCategory) { ?>
+        <a href="#<?= category ?>"><?= category ?></a>
+      <? } ?>
+    </nav>
+  </header>
+
+  <main>
+    <? for (const category in itemsByCategory) { ?>
+      <section id="<?= category ?>">
+        <p class="section-label"><?= category ?></p>
+        <div class="products-grid">
+          <? for (const item of itemsByCategory[category]) { ?>
+            <div class="product-card">
+              <? if (item.image && item.image.trim() !== "") { ?>
+                <img src="<?= item.image ?>" alt="<?= item.product ?>">
+              <? } ?>
+              <div class="card-body">
+                <h5><?= item.product ?></h5>
+                <p class="desc"><?= item.description ?></p>
+                <p class="price">$<?= item.price ?></p>
+              </div>
+            </div>
+          <? } ?>
+        </div>
+      </section>
+    <? } ?>
+  </main>
+
+  <footer>
+    <span>© 2025 — Desarrollado por <a href="https://ddw.com.ar" target="_blank">DDW</a></span>
+    <div class="qr-block">
+      <p>Accedé desde<br>este QR</p>
+      <img
+        src="https://landings.ddw.com.ar/restaurante-menu-qr/qr_menu_restaurant_demoddw.png"
+        alt="QR del menú"
+      >
     </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
